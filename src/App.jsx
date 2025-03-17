@@ -6,16 +6,14 @@ function App() {
   let [ textTitle, setTextTitle ] = useState(['Recommend mens coat', 'Recommend childruns coat', 'Recommend react course']); 
   let [ thumbsUp, setThumbsUp ] = useState([0, 0, 0]);
   let [ modal, setModal ] = useState(false);
+  let [ title, setTitle ] = useState(0);
+  let [ input, setInput ] = useState("");
 
-/*   function handleThumb() {
-    setThumbsUp( [thumbsUp + 1] );
-  } */
-
-  function handleTitle() {
-    const copyTitel = [...textTitle];
-    copyTitel[0] = 'Recommend womens coat';
-    setTextTitle(copyTitel);
-  }
+    function handlePostBlog () {
+      const addBlog = [...textTitle];
+      addBlog.unshift(input); 
+      setTextTitle(addBlog);
+    }
 
   function handleSorting() {
     const sortAlphabet = [...textTitle];
@@ -26,44 +24,40 @@ function App() {
   return (
   <div className="App">
     <div className="black-nav">
-      <h4>ReactBlog</h4>
+      <h4>Yeong's Blog</h4>
     </div>
 
     <button onClick={handleSorting}>sort alphabetically</button>
-    <button onClick={handleTitle}>Change title</button>
-{/* 
-      <div className = "list"> 
-        <h4>{ textTitle[0] } <span onClick={handleThumb}>👍</span> {thumbsUp} </h4>
-        <p>2/17</p>
-    </div>
-    <div className = "list"> 
-        <h4>{ textTitle[1] }</h4>
-        <p>2/17</p>
-    </div>
-    <div className = "list"> 
-        <h4 onClick={() => {setModal(!modal)}}>{ textTitle[2] }</h4>
-        <p>2/17</p>
-    </div>
- */}
+
 
     {
       textTitle.map(function(btn, i) {
         return (
           <div className="list" key={i}> 
-          <h4 onClick={() => {setModal(!modal)}}>{ textTitle[i] }
-            <span onClick={ () => {
+          <h4 onClick={() => {setModal(!modal); setTitle(i)}}>{ textTitle[i] }
+            <span onClick={ (e) => {
+              e.stopPropagation();
               let copy = [...thumbsUp];
               copy[i] = copy[i] + 1;
               setThumbsUp(copy)
             }}>👍</span> {thumbsUp[i]} </h4>
+            <button onClick={() => {      
+              let deleteText = [...textTitle];
+              deleteText.splice(i,1);
+              setTextTitle(deleteText);
+              }}>delete</button>
           <p>2/17</p>
           </div>
         );
       })
     }
+
+   <input onChange={(e)=>{setInput(e.target.value); console.log(input)}} type="text" />
+   <button onClick={handlePostBlog}>add</button>
+
     
     {
-      modal ? <Modal textTitle={textTitle} color={"skyblue"} /> : null
+      modal ? <Modal title={title} textTitle={textTitle} color={"light grey"} /> : null
     }
   </div>
   );
@@ -72,10 +66,10 @@ function App() {
 function Modal(props) {
   return(
     <div className = "modal" style={{background: props.color}}> 
-      <h4>{props.textTitle[0]}</h4>
+      <h4>{props.textTitle[props.title]}</h4>
       <p>Date</p>
       <p>Description</p>
-      <button>edit</button>
+      <button >edit</button>
     </div>
 
   );
